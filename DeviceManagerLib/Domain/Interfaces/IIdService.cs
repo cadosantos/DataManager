@@ -2,10 +2,8 @@
 
 namespace DeviceManagerLib.Domain.Interfaces
 {
-    public interface IDeviceTypeIdService
+    public interface IIdService
     {
-        public bool IsAnalogDevice(int id);
-        public bool IsDigitalDevice(int id);
         public int GetNextId(DeviceTypeEnum deviceType);
     }
 }

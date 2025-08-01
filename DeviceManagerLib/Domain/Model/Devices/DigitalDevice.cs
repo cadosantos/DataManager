@@ -1,13 +1,30 @@
-﻿using DeviceManagerLib.Domain.Interfaces;
+﻿using DeviceManagerLib.Domain.Enums;
+using DeviceManagerLib.Domain.Helpers;
+using DeviceManagerLib.Domain.Interfaces;
 
 namespace DeviceManagerLib.Domain.Model.Devices
 {
     public class DigitalDevice : Device
     {
-        public DigitalDevice(int id, string name, IDigitalDeviceDescriptionStrategy digitalDeviceDescriptionStrategy, IDigitalDeviceStatusStrategy digitalDeviceStatusStrategy)
-            : base(id, name, digitalDeviceDescriptionStrategy.GenerateDescription(id))
+        public DigitalDevice(IIdService idService, string name, DigitalDeviceStrategies strategies)
+            : base(name)
         {
-            Status = digitalDeviceStatusStrategy.GenerateStatus();
+            DeviceTypeEnum deviceType;
+            switch (strategies.Generation)
+            {
+                case DeviceGenerationEnum.Gen1:
+                    deviceType = DeviceTypeEnum.DigitalGen1;
+                    break;
+                case DeviceGenerationEnum.Gen2:
+                    deviceType = DeviceTypeEnum.DigitalGen2;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(ExceptionMessagesHelper.Instance.UnknownDeviceGeneration(strategies.Generation));
+            }
+
+            Id = idService.GetNextId(deviceType);
+            Description = strategies.DescriptionStrategy.GenerateDescription(Id);
+            Status = strategies.StatusStrategy.GenerateStatus();
         }
 
         public string Status { get; }

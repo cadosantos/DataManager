@@ -1,17 +1,15 @@
 ﻿using DeviceManagerLib.Domain.Model.Devices;
+using DeviceManagerLib.Domain.Services;
 
 namespace DeviceManagerTests.Model.Devices
 {
     public class AnalogDeviceTests
     {
         [Theory]
-        [InlineData(1, "AD0001")]
-        [InlineData(50, "AD0050")]
-        [InlineData(700, "AD0700")]
-        [InlineData(8000, "AD8000")]
-        public void AnalogDeviceSetsDescriptionProperly(int id, string expectedDescription)
+        [InlineData("AD0100")]
+        public void AnalogDeviceSetsDescriptionProperly(string expectedDescription)
         {
-            var analogDevice = new AnalogDevice(id, "Test Analog Device");
+            var analogDevice = new AnalogDevice(new IdService(),"Test Analog Device");
             Assert.Equal(expectedDescription, analogDevice.Description);
         }
     }

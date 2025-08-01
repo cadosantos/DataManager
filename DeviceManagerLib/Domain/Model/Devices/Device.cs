@@ -4,16 +4,14 @@ namespace DeviceManagerLib.Domain.Model.Devices
 {
     public abstract class Device : IDevice
     {
-        protected Device(int id, string name, string description)
+        public Device(string name)
         {
-            Id = id;
             Name = name;
-            Description = description;
         }
 
-        public int Id { get; }
+        public int Id { get; protected set; }
         public string Name { get; }
-        public string Description { get; }
+        public string Description { get; protected set; }
 
         public abstract void PrintInfo();
     }

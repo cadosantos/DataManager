@@ -1,33 +1,79 @@
-﻿using DeviceManagerLib.Domain.Helpers;
+﻿using DeviceManagerLib.Domain.Enums;
+using DeviceManagerLib.Domain.Helpers;
 using DeviceManagerLib.Domain.Interfaces;
+using DeviceManagerLib.Domain.Model;
 using DeviceManagerLib.Domain.Model.Devices;
+using DeviceManagerLib.Domain.Strategies.DigitalDeviceDescription;
+using DeviceManagerLib.Domain.Strategies.DigitalDeviceStatus;
 
 namespace DeviceManagerLib.Domain.Services
 {
     public class DeviceFactory : IDeviceFactory
     {
-        private readonly IDeviceTypeIdService _deviceTypeIdService;
-        private readonly IDigitalDeviceStrategiesFactory _digitalDeviceStrategiesFactory;
-        public DeviceFactory(IDeviceTypeIdService deviceTypeIdService, IDigitalDeviceStrategiesFactory digitalDeviceStrategiesFactory)
+        private IIdService _idService;
+
+        public DeviceFactory(IIdService idService)
         {
-            _deviceTypeIdService = deviceTypeIdService;
-            _digitalDeviceStrategiesFactory = digitalDeviceStrategiesFactory;
+            _idService = idService;
         }
 
-        public IDevice CreateDevice(int id, string name)
+        public IDevice CreateAnalogDevice(string name)
         {
-            if (_deviceTypeIdService.IsAnalogDevice(id))
+            return new AnalogDevice(_idService, name);
+        }
+
+        public IDevice CreateDigitalDeviceGen1(string name, DeviceVariantEnum deviceVariant)
+        {
+            return new DigitalDevice(_idService, name, GetDigitalStrategies(deviceVariant, DeviceGenerationEnum.Gen1));
+        }
+
+        public IDevice CreateDigitalDeviceGen2(string name)
+        {
+            return new DigitalDevice(_idService, name, GetDigitalStrategies(DeviceVariantEnum.D, DeviceGenerationEnum.Gen2));
+        }
+
+        private DigitalDeviceStrategies GetDigitalStrategies(DeviceVariantEnum deviceVariant, DeviceGenerationEnum deviceGeneration)
+        {
+            DigitalDeviceStrategies strategies = new DigitalDeviceStrategies();
+            strategies.Generation = deviceGeneration;
+
+            switch (deviceVariant)
             {
-                return new AnalogDevice(id, name);
-            }
-            
-            if (_deviceTypeIdService.IsDigitalDevice(id))
-            {
-                var digitalDeviceStrategies = _digitalDeviceStrategiesFactory.GetStrategies(id);
-                return new DigitalDevice(id, name, digitalDeviceStrategies.DescriptionStrategy, digitalDeviceStrategies.StatusStrategy);
+                case DeviceVariantEnum.A:
+                    EnsureGen1(deviceVariant, deviceGeneration);
+                    strategies.StatusStrategy = new DigitalDeviceStatusVariantAStrategy();
+                    break;
+                case DeviceVariantEnum.B:
+                    EnsureGen1(deviceVariant, deviceGeneration);
+                    strategies.StatusStrategy = new DigitalDeviceStatusVariantBStrategy();
+                    break;
+                case DeviceVariantEnum.D:
+                    switch (deviceGeneration)
+                    {
+                        case DeviceGenerationEnum.Gen1:
+                            strategies.StatusStrategy = new DigitalDeviceStatusVariantDGen1Strategy();
+                            break;
+                        case DeviceGenerationEnum.Gen2:
+                            strategies.DescriptionStrategy = new DigitalDeviceDescriptionGen2Strategy();
+                            strategies.StatusStrategy = new DigitalDeviceStatusVariantDGen2Strategy();
+                            break;
+                        default:
+                            throw new ArgumentOutOfRangeException(ExceptionMessagesHelper.Instance.UnknownDeviceGeneration(deviceGeneration));
+                    }
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(ExceptionMessagesHelper.Instance.UnknownDeviceVariant(deviceVariant));
             }
 
-            throw new ArgumentException(ExceptionMessagesHelper.Instance.UnknownDeviceType(id));
+            strategies.DescriptionStrategy ??= new DigitalDeviceDescriptionDefaultStrategy();
+
+            return strategies;
+        }
+
+        private void EnsureGen1(DeviceVariantEnum deviceVariant, DeviceGenerationEnum deviceGeneration)
+        {
+            if (deviceGeneration != DeviceGenerationEnum.Gen1)
+                throw new Exception(ExceptionMessagesHelper.Instance.UnavailableGenerationForVariant(deviceVariant, deviceGeneration));
         }
     }
 }

@@ -3,6 +3,7 @@
     public enum DeviceTypeEnum
     {
         Analog = 1,
-        Digital = 2
+        DigitalGen1 = 2,
+        DigitalGen2 = 3
     }
 }
