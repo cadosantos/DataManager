@@ -1,4 +1,6 @@
 ﻿using DeviceManagerLib.Domain.Model.Devices;
+using DeviceManagerLib.Domain.Strategies.DigitalDeviceDescription;
+using DeviceManagerLib.Domain.Strategies.DigitalDeviceStatus;
 
 namespace DeviceManagerTests.Model.Devices
 {
@@ -12,7 +14,8 @@ namespace DeviceManagerTests.Model.Devices
         [InlineData(90000, "DD90000")]
         public void DigitalDeviceSetsDescriptionProperly(int id, string expectedDescription)
         {
-            var digitalDevice = new DigitalDevice(id, "Test Digital Device");
+            //TODO
+            var digitalDevice = new DigitalDevice(id, "Test Digital Device", new DigitalDeviceDescriptionDefaultStrategy(), new DigitalDeviceStatusVariantAStrategy());
             Assert.Equal(expectedDescription, digitalDevice.Description);
         }
     }

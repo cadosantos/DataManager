@@ -6,22 +6,25 @@ namespace DeviceManagerLib.Domain.Services
 {
     public class DeviceFactory : IDeviceFactory
     {
-        private readonly IDeviceIdService _deviceIdService;
-        public DeviceFactory(IDeviceIdService deviceIdService)
+        private readonly IDeviceTypeIdService _deviceTypeIdService;
+        private readonly IDigitalDeviceStrategiesFactory _digitalDeviceStrategiesFactory;
+        public DeviceFactory(IDeviceTypeIdService deviceTypeIdService, IDigitalDeviceStrategiesFactory digitalDeviceStrategiesFactory)
         {
-            _deviceIdService = deviceIdService;
+            _deviceTypeIdService = deviceTypeIdService;
+            _digitalDeviceStrategiesFactory = digitalDeviceStrategiesFactory;
         }
 
         public IDevice CreateDevice(int id, string name)
         {
-            if (_deviceIdService.IsAnalogDevice(id))
+            if (_deviceTypeIdService.IsAnalogDevice(id))
             {
                 return new AnalogDevice(id, name);
             }
             
-            if (_deviceIdService.IsDigitalDevice(id))
+            if (_deviceTypeIdService.IsDigitalDevice(id))
             {
-                return new DigitalDevice(id, name);
+                var digitalDeviceStrategies = _digitalDeviceStrategiesFactory.GetStrategies(id);
+                return new DigitalDevice(id, name, digitalDeviceStrategies.DescriptionStrategy, digitalDeviceStrategies.StatusStrategy);
             }
 
             throw new ArgumentException(ExceptionMessagesHelper.Instance.UnknownDeviceType(id));

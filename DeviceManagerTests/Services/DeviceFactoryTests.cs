@@ -14,7 +14,7 @@ namespace DeviceManagerTests.Services
         [InlineData(20000, null, typeof(ArgumentException))]
         public void FactoryCreatesCorrectDevice(int id, bool? isAnalogicDevice, Type? expectedExceptionType)
         {
-            var subject = new DeviceFactory(new DeviceIdService());
+            var subject = new DeviceFactory(new DeviceTypeIdService(), new DigitalDeviceStrategiesFactory(new DigitalDeviceGenerationIdService()));
             
             if (expectedExceptionType != null)
             {

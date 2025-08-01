@@ -1,6 +1,4 @@
-﻿using DeviceManagerLib.Domain.Enums;
-
-namespace DeviceManagerLib.Domain.Helpers
+﻿namespace DeviceManagerLib.Domain.Helpers
 {
     internal class ExceptionMessagesHelper
     {
@@ -23,7 +21,8 @@ namespace DeviceManagerLib.Domain.Helpers
         }
 
         public string UnknownDeviceType(int id) => $"There is no device type for id '{id}'.";
-        public string DeviceTypeIdRangeNotSet(DeviceTypeEnum deviceType) => $"Device type '{deviceType}' hasn't set its Ids range yet.";
+        public string IdRangeNull(Type enumType) => $"'{enumType.Name}' cannot have an empty Ids range.";
+        public string IdRangeNotSet(Enum @enum) => $"'{@enum.GetType().Name}' hasn't set its Ids range yet.";
         public string IdRangeDepleted() => "The Id range is depleted.";
     }
 }

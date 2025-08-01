@@ -7,11 +7,11 @@ namespace DeviceManager
     public class DeviceManager
     {
         private readonly IDeviceFactory _deviceFactory;
-        private readonly IDeviceIdService _deviceIdService;
-        public DeviceManager(IDeviceFactory deviceFactory, IDeviceIdService deviceIdService)
+        private readonly IDeviceTypeIdService _deviceTypeIdService;
+        public DeviceManager(IDeviceFactory deviceFactory, IDeviceTypeIdService deviceTypeIdService)
         {
             _deviceFactory = deviceFactory;
-            _deviceIdService = deviceIdService;
+            _deviceTypeIdService = deviceTypeIdService;
         }
 
         public List<IDevice> GenerateData(int count)
@@ -24,7 +24,7 @@ namespace DeviceManager
                 foreach (var deviceType in EnumsHelper.Instance.GetEnums<DeviceTypeEnum>())
                 {
                     string deviceName = $"device {index}";
-                    IDevice device = _deviceFactory.CreateDevice(_deviceIdService.GetNextId(deviceType), deviceName);
+                    IDevice device = _deviceFactory.CreateDevice(_deviceTypeIdService.GetNextId(deviceType), deviceName);
                     result.Add(device);
 
                     index++;

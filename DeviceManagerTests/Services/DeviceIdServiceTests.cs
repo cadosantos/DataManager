@@ -13,9 +13,9 @@ namespace DeviceManagerTests.Services
         [InlineData(10000, false)]
         [InlineData(19999, false)]
         [InlineData(20000, null)]
-        public void DeviceIdServiceIdentifyDeviceTypeCorrectly(int id, bool? isAnalogicDevice)
+        public void DeviceTypeIdServiceIdentifyDeviceTypeCorrectly(int id, bool? isAnalogicDevice)
         {
-            var subject = new DeviceIdService();
+            var subject = new DeviceTypeIdService();
 
             if (isAnalogicDevice.HasValue)
             {
@@ -30,9 +30,9 @@ namespace DeviceManagerTests.Services
         }
 
         [Fact]
-        public void DeviceIdServiceGetsNextIdCorrectly()
+        public void DeviceTypeIdServiceGetsNextIdCorrectly()
         {
-            var subject = new DeviceIdService();
+            var subject = new DeviceTypeIdService();
 
             var deviceTypesIdRange = new Dictionary<DeviceTypeEnum, IdRange>
             {
