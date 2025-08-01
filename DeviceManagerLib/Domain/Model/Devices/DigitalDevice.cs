@@ -19,12 +19,12 @@ namespace DeviceManagerLib.Domain.Model.Devices
                     deviceType = DeviceTypeEnum.DigitalGen2;
                     break;
                 default:
-                    throw new ArgumentOutOfRangeException(ExceptionMessagesHelper.Instance.UnknownDeviceGeneration(strategies.Generation));
+                    throw new ArgumentOutOfRangeException(nameof(strategies.Generation), ExceptionMessagesHelper.UnknownDeviceGeneration(strategies.Generation));
             }
 
             Id = idService.GetNextId(deviceType);
-            Description = strategies.DescriptionStrategy.GenerateDescription(Id);
-            Status = strategies.StatusStrategy.GenerateStatus();
+            Description = strategies.DescriptionStrategy!.GenerateDescription(Id);
+            Status = strategies.StatusStrategy!.GenerateStatus();
         }
 
         public string Status { get; }

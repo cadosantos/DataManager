@@ -5,7 +5,7 @@ namespace DeviceManagerLib.Domain.Strategies.DigitalDeviceStatus
 {
     public abstract class DigitalDeviceStatusVariantDStrategy : IDigitalDeviceStatusStrategy
     {
-        public DigitalDeviceStatusVariantDStrategy()
+        protected DigitalDeviceStatusVariantDStrategy()
         {
             GenerateValueFunc = GenerateRandomIntegerWithinRange;
         }
@@ -15,7 +15,7 @@ namespace DeviceManagerLib.Domain.Strategies.DigitalDeviceStatus
         const int LowerBound = 0;
         const int UpperBound = 100;
 
-        public abstract int Step { get; }
+        protected abstract int Step { get; }
 
         public string GenerateStatus()
         {
@@ -25,10 +25,10 @@ namespace DeviceManagerLib.Domain.Strategies.DigitalDeviceStatus
         private string GenerateStatus(int value)
         {
             if (value < LowerBound || value > UpperBound)
-                throw new ArgumentOutOfRangeException(ExceptionMessagesHelper.Instance.ValueOutOfBounds(LowerBound.ToString(), UpperBound.ToString()));
+                throw new ArgumentOutOfRangeException(nameof(value), ExceptionMessagesHelper.ValueOutOfBounds(LowerBound.ToString(), UpperBound.ToString()));
 
             if (value % Step != 0)
-                throw new ArgumentOutOfRangeException(ExceptionMessagesHelper.Instance.ValueInvalidForStep(Step));
+                throw new ArgumentOutOfRangeException(nameof(value), ExceptionMessagesHelper.ValueInvalidForStep(Step));
 
             switch (value)
             {
@@ -43,11 +43,10 @@ namespace DeviceManagerLib.Domain.Strategies.DigitalDeviceStatus
 
         private int GenerateRandomIntegerWithinRange()
         {
-            Random random = new Random();
             var range = UpperBound - LowerBound;
             var possibleNumbersCount = range / Step + 1;
 
-            return LowerBound + random.Next(LowerBound, possibleNumbersCount) * Step;
+            return LowerBound + Random.Shared.Next(LowerBound, possibleNumbersCount) * Step;
         }
     }
 }

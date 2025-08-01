@@ -4,7 +4,7 @@ namespace DeviceManagerLib.Domain.Model.Devices
 {
     public abstract class Device : IDevice
     {
-        public Device(string name)
+        protected Device(string name)
         {
             Name = name;
         }

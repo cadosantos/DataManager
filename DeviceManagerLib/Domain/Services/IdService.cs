@@ -17,7 +17,7 @@ namespace DeviceManagerLib.Domain.Services
         public int GetNextId(DeviceTypeEnum deviceTypeEnum)
         {
             if (!_deviceTypeIdRange.TryGetValue(deviceTypeEnum, out var idRange))
-                throw new ArgumentException(ExceptionMessagesHelper.Instance.IdRangeNotSet(deviceTypeEnum));
+                throw new ArgumentException(nameof(deviceTypeEnum), ExceptionMessagesHelper.IdRangeNotSet(deviceTypeEnum));
 
             return idRange.NextId();
         }

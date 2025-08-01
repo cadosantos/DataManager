@@ -23,7 +23,7 @@ namespace DeviceManagerLib.Domain.Strategies.DigitalDeviceStatus
         private string GenerateStatus(decimal value)
         {
             if (value < LowerBound || value > UpperBound)
-                throw new ArgumentOutOfRangeException(ExceptionMessagesHelper.Instance.ValueOutOfBounds(FormatDecimalValue(LowerBound), FormatDecimalValue(UpperBound)));
+                throw new ArgumentOutOfRangeException(nameof(value), ExceptionMessagesHelper.ValueOutOfBounds(FormatDecimalValue(LowerBound), FormatDecimalValue(UpperBound)));
 
             switch (value)
             {
@@ -33,12 +33,9 @@ namespace DeviceManagerLib.Domain.Strategies.DigitalDeviceStatus
                     return "High";
                 default:
                     var formattedDecimalValue = FormatDecimalValue(value);
-                    if (value > 0)
-                    {
-                        return $"+{formattedDecimalValue}";
-                    }
-
-                    return formattedDecimalValue;
+                    return value > 0
+                        ? $"+{formattedDecimalValue}"
+                        :formattedDecimalValue;
             }
         }
 
@@ -49,9 +46,8 @@ namespace DeviceManagerLib.Domain.Strategies.DigitalDeviceStatus
 
         private decimal GenerateRandomDecimalWithinRange()
         {
-            Random random = new Random();
             decimal range = UpperBound - LowerBound;
-            decimal decimalMultiplier = (decimal)random.NextDouble();
+            decimal decimalMultiplier = (decimal)Random.Shared.NextDouble();
             return LowerBound + decimalMultiplier * range;
         }
     }

@@ -10,8 +10,7 @@ namespace DeviceManagerLib.Domain.Services
 {
     public class DeviceFactory : IDeviceFactory
     {
-        private IIdService _idService;
-
+        private readonly IIdService _idService;
         public DeviceFactory(IIdService idService)
         {
             _idService = idService;
@@ -37,6 +36,8 @@ namespace DeviceManagerLib.Domain.Services
             DigitalDeviceStrategies strategies = new DigitalDeviceStrategies();
             strategies.Generation = deviceGeneration;
 
+            var descriptionDefaultStrategy = new DigitalDeviceDescriptionDefaultStrategy();
+
             switch (deviceVariant)
             {
                 case DeviceVariantEnum.A:
@@ -54,18 +55,18 @@ namespace DeviceManagerLib.Domain.Services
                             strategies.StatusStrategy = new DigitalDeviceStatusVariantDGen1Strategy();
                             break;
                         case DeviceGenerationEnum.Gen2:
-                            strategies.DescriptionStrategy = new DigitalDeviceDescriptionGen2Strategy();
+                            strategies.DescriptionStrategy = new DigitalDeviceDescriptionGen2Strategy(descriptionDefaultStrategy);
                             strategies.StatusStrategy = new DigitalDeviceStatusVariantDGen2Strategy();
                             break;
                         default:
-                            throw new ArgumentOutOfRangeException(ExceptionMessagesHelper.Instance.UnknownDeviceGeneration(deviceGeneration));
+                            throw new ArgumentOutOfRangeException(nameof(deviceGeneration), ExceptionMessagesHelper.UnknownDeviceGeneration(deviceGeneration));
                     }
                     break;
                 default:
-                    throw new ArgumentOutOfRangeException(ExceptionMessagesHelper.Instance.UnknownDeviceVariant(deviceVariant));
+                    throw new ArgumentOutOfRangeException(nameof(deviceVariant), ExceptionMessagesHelper.UnknownDeviceVariant(deviceVariant));
             }
 
-            strategies.DescriptionStrategy ??= new DigitalDeviceDescriptionDefaultStrategy();
+            strategies.DescriptionStrategy ??= descriptionDefaultStrategy;
 
             return strategies;
         }
@@ -73,7 +74,7 @@ namespace DeviceManagerLib.Domain.Services
         private void EnsureGen1(DeviceVariantEnum deviceVariant, DeviceGenerationEnum deviceGeneration)
         {
             if (deviceGeneration != DeviceGenerationEnum.Gen1)
-                throw new Exception(ExceptionMessagesHelper.Instance.UnavailableGenerationForVariant(deviceVariant, deviceGeneration));
+                throw new Exception(ExceptionMessagesHelper.UnavailableGenerationForVariant(deviceVariant, deviceGeneration));
         }
     }
 }

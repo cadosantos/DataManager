@@ -2,8 +2,8 @@
 {
     public enum DeviceVariantEnum
     {
-        A,
-        B,
-        D
+        A = 1,
+        B = 2,
+        D = 3
     }
 }

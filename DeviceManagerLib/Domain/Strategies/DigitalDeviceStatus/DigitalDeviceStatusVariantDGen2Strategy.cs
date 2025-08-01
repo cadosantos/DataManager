@@ -2,6 +2,6 @@
 {
     public class DigitalDeviceStatusVariantDGen2Strategy : DigitalDeviceStatusVariantDStrategy
     {
-        public override int Step => 1;
+        protected override int Step => 1;
     }
 }

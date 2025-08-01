@@ -18,7 +18,7 @@ namespace DeviceManagerLib.Domain.Model
         public int NextId()
         {
             if (_currentId > FinalId)
-                throw new Exception(ExceptionMessagesHelper.Instance.IdRangeDepleted());
+                throw new Exception(ExceptionMessagesHelper.IdRangeDepleted());
 
             return _currentId++;
         }

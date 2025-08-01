@@ -18,16 +18,14 @@ namespace DeviceManagerLib.Domain.Strategies.DigitalDeviceStatus
 
         public string GenerateStatus(bool value)
         {
-            if (value)
-                return "On";
-            
-            return "Off";
+            return value
+                ? "On"
+                : "Off";
         }
 
         private bool GenerateRandomBoolean()
         {
-            Random random = new Random();
-            return Convert.ToBoolean(random.Next(0, 2));
+            return Convert.ToBoolean(Random.Shared.Next(0, 2));
         }
     }
 }
