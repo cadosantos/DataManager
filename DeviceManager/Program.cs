@@ -1,6 +1,10 @@
-﻿using DeviceManagerLib.Domain.Model;
+﻿using DeviceManagerLib.Domain.Interfaces;
+using DeviceManagerLib.Domain.Services;
 
-DeviceManager.DeviceManager deviceManager = new DeviceManager.DeviceManager();
+IDeviceIdService deviceIdService = new DeviceIdService();
+IDeviceFactory deviceFactory = new DeviceFactory(deviceIdService);
+
+DeviceManager.DeviceManager deviceManager = new DeviceManager.DeviceManager(deviceFactory, deviceIdService);
 int dataToGenerate = 5;
-List<Device> devices = deviceManager.GenerateData(dataToGenerate);
+List<IDevice> devices = deviceManager.GenerateData(dataToGenerate);
 deviceManager.ShowData(devices);

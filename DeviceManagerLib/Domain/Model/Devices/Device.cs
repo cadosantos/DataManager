@@ -1,10 +1,12 @@
-﻿namespace DeviceManagerLib.Domain.Model
+﻿using DeviceManagerLib.Domain.Interfaces;
+
+namespace DeviceManagerLib.Domain.Model.Devices
 {
-    public class Device
+    public abstract class Device : IDevice
     {
-        public Device(string name, string description)
+        protected Device(int id, string name, string description)
         {
-            Id = Globals.Instance.GetNextFreeDeviceId();
+            Id = id;
             Name = name;
             Description = description;
         }
